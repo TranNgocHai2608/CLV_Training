@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+	<querys>
+		<query name="CarrierMgmtDBDAOCarrierMgmtRSQL">
+			<desc><![CDATA[Search]]></desc>
+			<sql><![CDATA[
+SELECT 
+	MODI_COST_CTR_CD
+,	EDW_UPD_DT
+,	UPD_USR_ID
+,	UPD_DT
+,	CRE_USR_ID
+,	CRE_DT
+,	DELT_FLG
+,	JO_STL_OPT_CD
+,	TRD_CD
+,	CUST_SEQ
+,	CUST_CNT_CD
+,	VNDR_SEQ
+,	RLANE_CD
+,	JO_CRR_CD
+FROM JOO_CARRIER
+WHERE 1=1
+#if (${jo_crr_cd} != '' && ${jo_crr_cd} != 'ALL')
+and jo_crr_cd in (
+	#foreach($key IN ${obj_list_no})
+		#if($velocityCount < $obj_list_no.size()) 
+			'$key', 
+		#else 
+			'$key' 
+		#end 
+	#end
+)
+#end
+#if (${rlane_cd} != '')
+and RLANE_CD like '%'||@[rlane_cd]||'%'
+#end
+#if (${vndr_seq} != '')
+and vndr_seq like '%'||@[vndr_seq]||'%'
+#end
+#if (${s_cre_dt_fm} != '' && ${s_cre_dt_to} == '')
+and cre_dt >= to_date(@[s_cre_dt_fm],'YYYY-MM-DD')
+#end
+
+#if (${s_cre_dt_fm} == '' && ${s_cre_dt_to} != '')
+and cre_dt <= to_date(@[s_cre_dt_to],'YYYY-MM-DD')
+#end
+
+#if (${s_cre_dt_fm} != '' && ${s_cre_dt_to}!='')
+and cre_dt BETWEEN to_date(@[s_cre_dt_fm],'YYYY-MM-DD') AND to_date(@[s_cre_dt_to],'YYYY-MM-DD')
+#end				]]></sql>
+			<params>
+				<param name="rlane_cd" type="12" value="" out="N"/>
+				<param name="vndr_seq" type="12" value="" out="N"/>
+				<param name="s_cre_dt_fm" type="12" value="" out="N"/>
+				<param name="s_cre_dt_to" type="12" value="" out="N"/>
+			</params>
+		</query>
+	</querys>
+</sqls>

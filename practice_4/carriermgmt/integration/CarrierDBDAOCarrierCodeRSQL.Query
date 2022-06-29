@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+	<querys>
+		<query name="CarrierDBDAOCarrierCodeRSQL">
+			<desc><![CDATA[combo code]]></desc>
+			<sql><![CDATA[
+SELECT CRR_CD AS jo_Crr_Cd
+FROM MDM_CARRIER			]]></sql>
+			<params>
+			</params>
+		</query>
+	</querys>
+</sqls>
