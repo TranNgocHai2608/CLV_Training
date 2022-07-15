@@ -46,30 +46,42 @@
 		loadPage();
 	}
 </script>
-
+<script language="javascript" type="text/javascript" src="apps/opus/esm/clv/practice1/moneymgmt/script/CoMoneyMgmt.js"></script>
 <form name="form">
 	<input type="hidden" name="f_cmd"> 
 	<input type="hidden" name="pagerows"> 
 	<input type="hidden" name="value_partner">
 	<input type="hidden" name="dblclick"> 
-	<!-- 개발자 작업	-->
+	<!-- page_title_area(S) -->
 	<div class="page_title_area clear">
+		<!-- page_title(S) -->
 		<h2 class="page_title">
 			<button type="button">
-				<span id="title"><b>ESM_DOU_0108</b></span>
+			
+				<span id="title"><b></b></span>
 			</button>
 		</h2>
+		
+		<!-- page_title(E) -->
+		<!-- opus_design_btn(S) -->
 		<div class="opus_design_btn">
 			<button type="button" class="btn_accent" name="btn_Retrieve" id="btn_Retrieve">Retrieve</button><!--
 			--><button type="button" class="btn_normal" name="btn_New" id="btn_New">New</button><!--
 			--><button type="button" class="btn_normal" name="btn_DownExcel"id="btn_DownExcel">Down Excel</button><!-- 
 			--><button type="button" class="btn_normal" name="btn_DownExcel2" id="btn_DownExcel2">Down Excel2</button>
 		</div>
+		<!-- opus_design_btn(E) -->
+		<!-- page_location(S) -->
 		<div class="location">
 			<span id="navigation"></span>
 		</div>
+		<!-- page_location(E) -->
 	</div>
+	<!-- page_title_area(E) -->
+	
+	<!-- wrap_search(S) -->
 	<div class="wrap_search_tab">
+		<!-- opus_design_inquiry(S) -->
 		<div class="opus_design_inquiry wFit">
 			<table>
 				<tbody>
@@ -86,10 +98,10 @@
 					<tr class = "h23">
 						<th>Year Month</th>
 						<td>
-							<input type="text" style="width: 100px;" class="input1" value="" name="acct_yrmon_from" id="acct_yrmon_from"><!--
+							<input type="text" style="width: 100px;" class="input1" value="" name="acct_yrmon_from" id="acct_yrmon_from" readonly><!--
 							--><button type="button" class="btn_left" name="btn_datefrom_down" id="btn_datefrom_down"></button><!--
 							--><button type="button" class="btn_right" name="btn_datefrom_up" id="b	tn_datefrom_up"></button><!--
-							--><input type="text" style="width: 100px;" class="input1" value="" name="acct_yrmon_to" id="acct_yrmon_to"><!--
+							--><input type="text" style="width: 100px;" class="input1" value="" name="acct_yrmon_to" id="acct_yrmon_to" readonly><!--
 							--><button type="button" class="btn_left" name="btn_dateto_down" id="btn_dateto_down"></button><!--
 							--><button type="button" class="btn_right" name="btn_dateto_up" id="btn_dateto_up"></button>
 						</td>
@@ -103,19 +115,27 @@
 				</tbody>
 			</table>
 		</div>
+		<!-- opus_design_inquiry(E) -->
 	</div>
+	<!-- wrap_search(E) -->
 
-	 <div class="wrap_result">
-            <div class="opus_design_tab sm">
-                <script type="text/javascript">ComTabObject('tab1')</script>
-            </div>
-               <div class="opus_design_grid  clear" name="tabLayer" id="tabLayer">
-               	<script language="javascript">ComSheetObject('sheet1');</script>
-               </div>
-           
-               <div class="opus_design_grid  clear" name="tabLayer" id="tabLayer">
-               	<script language="javascript">ComSheetObject('sheet2');</script>
-               </div>
-            </div>
-	<!-- 개발자 작업  끝 -->
+<!-- wrap_result(S) -->
+	<div class="wrap_result">
+	    <div class="opus_design_tab sm">
+	        <script type="text/javascript">ComTabObject('tab1')</script>
+	    </div>
+	    <!-- opus_design_grid(S) -->
+	    <div class="opus_design_grid clear" name="tabLayer" id="tabLayer">
+	        <script language="javascript">ComSheetObject('sheet1');</script>
+	    </div>
+	    <!-- opus_design_grid(E) -->
+	
+	    <!-- opus_design_grid(S) -->
+	    <div class="opus_design_grid clear" name="tabLayer" id="tabLayer">
+	        <script language="javascript">ComSheetObject('sheet2');</script>
+	    </div>
+	    <!-- opus_design_grid(E) -->
+	</div>
+      
+      <!-- wrap_result(E) -->
 </form>

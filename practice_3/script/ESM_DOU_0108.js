@@ -4,7 +4,7 @@
 *@FileTitle : Error Messsage Management
 *Open Issues :
 *Change history :
-*@LastModifyDate : 2022.06.07
+*@LastModifyDate : 2022.07.14
 *@LastModifier : 
 *@LastVersion : 1.0
 * 2022.06.07 
@@ -36,10 +36,11 @@
 	var comboCnt = 0;
 	var tabCnt = 0;
 	var beforetab = 1;
-	var searchDetail="";
-	var searchSummary="";
-	var firstLoad=true;
+	var searchDetail = "";
+	var searchSummary = "";
+	var firstLoad = true;
 	var check3Month = false;
+	var isDblClick = false;
 	var searchOptionForDbl = "";
 	// set function processButtonClick for event onclick on browser
 	document.onclick = processButtonClick;
@@ -106,7 +107,7 @@
 	 }
 	 
 	 /**
-	  *  Event start when user checks Partner combobox 
+	  * Event start when user checks Partner combobox 
 	  * @param Index
 	  * @param Code
 	  * @param Checked
@@ -123,10 +124,12 @@
 		            disableLaneAndTrade();
 		        }
 			} else {
+				
 		        var bChk = s_jo_crr_cd.GetItemCheck(Code);
 		        if (bChk) {
 		        	s_jo_crr_cd.SetItemCheck(0,false,0);
 		        } 
+		        s_rlane_cd.SetEnable(true);
 		    }
 			for (var i = 0; i < count; i++){
 				if (s_jo_crr_cd.GetItemCheck(i)){
@@ -138,7 +141,9 @@
 				disableLaneAndTrade();
 			 } 		
 		}
-
+	/**
+	 * disable Lane and trade combo
+	 */
 	 function disableLaneAndTrade() {
 		s_rlane_cd.RemoveAll();
       	s_trade_cd.RemoveAll();
@@ -146,10 +151,18 @@
      	s_trade_cd.SetEnable(false);
 	 }
 	 
+	 /**
+	  * event start when user change lane combo
+	  */
+	function s_rlane_cd_OnChange() {
+		if(document.form.s_rlane_cd.value != ""){
+			getTradeComboData();
+			s_trade_cd.SetEnable(true);
+		}
+	}
 	 
 	 /**
 	  * Event start when user out focus Partner combobox 
- 
 	  */
 	 function s_jo_crr_cd_OnBlur() {
 		 if(document.form.s_jo_crr_cd.value != "All"){
@@ -187,11 +200,11 @@
 	 	var xml = sheetObjects[0].GetSearchData("ESM_DOU_0108GS.do",FormQueryString(document.form));
 	 	lanes = ComGetEtcData(xml, "lanes");
 	 	generateDataCombo(comboObjects[1], lanes);
-	 	if (s_rlane_cd.GetItemCount() > 0) {
-	 		s_rlane_cd.SetSelectIndex(0, 1);
-	 		s_rlane_cd.SetEnable(true);
-	 	} else
-	 		s_rlane_cd.SetEnable(false);
+//	 	if (s_rlane_cd.GetItemCount() > 0) {
+////	 		s_rlane_cd.SetSelectIndex(0, 1);
+//	 		s_rlane_cd.SetEnable(true);
+//	 	} else
+//	 		s_rlane_cd.SetEnable(false);
 	 }
 
 	 /**
@@ -203,21 +216,14 @@
 	 	var xml = sheetObjects[0].GetSearchData("ESM_DOU_0108GS.do", FormQueryString(document.form));
 	 	trades = ComGetEtcData(xml, "trades");
 	 	generateDataCombo(comboObjects[2], trades);
-	 	if (s_trade_cd.GetItemCount() > 0) {
-	 		s_trade_cd.SetSelectIndex(0, 1);
-	 		s_trade_cd.SetEnable(true);
-	 	} else{
-	 		s_trade_cd.SetEnable(false);
-	 	}
+//	 	if (s_trade_cd.GetItemCount() > 0) {
+////	 		s_trade_cd.SetSelectIndex(0, 1);
+//	 		s_trade_cd.SetEnable(true);
+//	 	} else{
+//	 		s_trade_cd.SetEnable(false);
+//	 	}
 	 }
 	 
-	 /**
-	  * event start when user change lane combo
-	  */
-	function s_rlane_cd_OnChange() {
-		s_trade_cd.SetEnable(true);
-		getTradeComboData();
-	}
 
 	/**
 	 * Initializing tab object
@@ -302,7 +308,7 @@
             switch(srcName) {
             	case "btn_Retrieve":
             		if(!check3Month && checkOverThreeMonth(formObject)){
-            			if (confirm("Year Month over 3 months, do you really want to get data ?")){
+            			if (confirm(msgs['ESM0001'])){
             				check3Month = true;
 	    	    		} else {
 	    	    			return;
@@ -326,7 +332,7 @@
             		break;
     			case "btn_datefrom_up":
     				if(!checkDate(formObject)) {
-            			ComShowMessage("Start date must be earlier than end date");
+            			ComShowMessage(msgs['ESM0002']);
             		} else {
             			addMonth(formObject.acct_yrmon_from, 1);
                 		yearMonth_Onchange();
@@ -399,20 +405,20 @@
     	            
     	            var cols = [ 
     	       	             { Type: "Status", Hidden: 1, Width: 50,  Align: "Center", ColMerge: 0, SaveName: "ibflag" },
-    	       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "jo_crr_cd",       KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
-    	       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "rlane_cd",        KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
-    	       	             { Type: "Text",   Hidden: 0, Width: 150, Align: "Center", ColMerge: 0, SaveName: "inv_no",          KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
-    	       	             { Type: "Text",   Hidden: 0, Width: 200, Align: "Center", ColMerge: 0, SaveName: "csr_no",          KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
-    	       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "apro_flg",        KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    	       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "locl_curr_cd",    KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    	       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_rev_act_amt", KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    	       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_exp_act_amt", KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    	       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "prnr_ref_no",     KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    	       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "cust_vndr_eng_nm",KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0}
+    	       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "jo_crr_cd",       KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
+    	       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "rlane_cd",        KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
+    	       	             { Type: "Text",   Hidden: 0, Width: 150, Align: "Center", ColMerge: 0, SaveName: "inv_no",          KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
+    	       	             { Type: "Text",   Hidden: 0, Width: 200, Align: "Center", ColMerge: 0, SaveName: "csr_no",          KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
+    	       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "apro_flg",        KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    	       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "locl_curr_cd",    KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    	       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_rev_act_amt", KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    	       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_exp_act_amt", KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    	       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "prnr_ref_no",     KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    	       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "cust_vndr_eng_nm",KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0}
     	       	             ];
     	            InitColumns(cols);
     				SetEditable(1);
-    				SetAutoSumPosition(1);
+    				ShowSubSum([{StdCol:"inv_no" , SumCols:"7|8",ShowCumulate:0,CaptionText:"",CaptionCol:3}]);
     				SetWaitImageVisible(0);
     				resizeSheet(); 
     			}
@@ -431,22 +437,22 @@
     	            
     	            var cols = [ 
     		       	             { Type: "Status", Hidden: 1, Width: 50,  Align: "Center", ColMerge: 0, SaveName: "ibflag" },
-    		       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "jo_crr_cd",       KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
-    		       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "rlane_cd",        KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
-    		       	             { Type: "Text",   Hidden: 0, Width: 150, Align: "Center", ColMerge: 0, SaveName: "inv_no",          KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
-    		       	             { Type: "Text",   Hidden: 0, Width: 200, Align: "Center", ColMerge: 0, SaveName: "csr_no",          KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
-    		       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "apro_flg",        KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    		       	             { Type: "Combo",  Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "rev_exp",         KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0, ComboText: "Rev|Exp", ComboCode: "R|E"},
-    		       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "item",        	 KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    		       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "locl_curr_cd",    KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    		       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_rev_act_amt", KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    		       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_exp_act_amt", KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    		       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "prnr_ref_no",     KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    		       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "cust_vndr_eng_nm",KeyField: 1, Format: "", UpdateEdit: 0, InsertEdit: 0}
+    		       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "jo_crr_cd",       KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
+    		       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "rlane_cd",        KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
+    		       	             { Type: "Text",   Hidden: 0, Width: 150, Align: "Center", ColMerge: 0, SaveName: "inv_no",          KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
+    		       	             { Type: "Text",   Hidden: 0, Width: 200, Align: "Center", ColMerge: 0, SaveName: "csr_no",          KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
+    		       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "apro_flg",        KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    		       	             { Type: "Combo",  Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "rev_exp",         KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0, ComboText: "Rev|Exp", ComboCode: "R|E"},
+    		       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "item",        	 KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    		       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "locl_curr_cd",    KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    		       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_rev_act_amt", KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    		       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_exp_act_amt", KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    		       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "prnr_ref_no",     KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    		       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "cust_vndr_eng_nm",KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0}
     		       	             ];
     		            InitColumns(cols);
     					SetEditable(1);
-    					SetAutoSumPosition(1);
+    					ShowSubSum([{StdCol:"inv_no" , SumCols:"9|10",ShowCumulate:0,CaptionText:"",CaptionCol:3}]);
     					SetWaitImageVisible(0);
     					resizeSheet();
     			}
@@ -469,8 +475,6 @@
 					formObj.f_cmd.value = SEARCH;
 					var xml = sheetObjects[0].GetSearchData("ESM_DOU_0108GS.do", FormQueryString(formObj));
 		    		sheetObjects[0].LoadSearchData(xml,{Sync:1});
-		    		
-//					sheetObj.DoSearch("ESM_DOU_0108GS.do", FormQueryString(formObj));
 					
 				} else if (sheetObj.id == "sheet2"){
 					ComOpenWait(true);
@@ -479,8 +483,6 @@
 					
 					var xml = sheetObjects[1].GetSearchData("ESM_DOU_0108GS.do", FormQueryString(formObj));
 		    		sheetObjects[1].LoadSearchData(xml,{Sync:1});
-		    		
-//					sheetObj.DoSearch("ESM_DOU_0108GS.do", FormQueryString(formObj));
 				}
 				break;
 	        	
@@ -537,24 +539,23 @@
      * @param formObj
      * @returns {Boolean}
      */
-    function checkOverThreeMonth(formObj){
-    	var months;
-    	var dateFrom = new Date(formObj.acct_yrmon_from.value);
-    	var dateTo = new Date(formObj.acct_yrmon_to.value);
+    function checkOverThreeMonth(formObj){ 
     	
-        months = (dateTo.getFullYear() - dateFrom.getFullYear()) * 12;
-        months -= dateFrom.getMonth();
-        months += dateTo.getMonth();
+    	var formObj = document.form;
+    	var fromDate = formObj.acct_yrmon_from.value.replaceStr("-", "") + "01";
+    	var toDate = formObj.acct_yrmon_to.value.replaceStr("-", "") + "01";
+//    	if (ComGetDaysBetween(fromDate, toDate) > 88)
+//    		return false;
+//    	return true;
+    	return ComGetDaysBetween(fromDate, toDate) > 88;
         
-        if(months <= 3) return false;
-        else return true;
     }
     
     /**
      * event start when click change tab
-     * nItem --> the number of tab that user click in
+     * nItem the number of tab that user click in
      * @param tabObj
-     * @param nItem
+     * @param nItem: the number of tab that user click in
      */
     function tab1_OnChange(tabObj, nItem) {
     	var objs=document.all.item("tabLayer");
@@ -594,14 +595,19 @@
      */
     function handleOnchangeTab(){
     	if(firstLoad) {
-    		firstLoad=false;
+    		firstLoad = false;
     		return;
     	}
+    	 if (isDblClick) {
+    	        isDblClick = false;
+    	        return;
+    	    }
     	var currentSheet = getCurrentSheet();
     	var formQuery = getSearchOption();
 
     	if(searchSummary != formQuery && searchDetail != formQuery){
-    		if (confirm("Search data was changed. Do you want to retrieve?")) {
+//    		ComShowCodeConfirm("Search data was changed. Do you want to retrieve?") 
+    		if (confirm(msgs['ESM0003'])) {
     			doActionIBSheet(currentSheet,document.form,IBSEARCH);
     		} else {
     			return;
@@ -610,12 +616,10 @@
     	
     	if(currentSheet.id=="sheet1"){//Summary Sheet
     		if(searchSummary != formQuery){
-//    			searchSummary=formQuery;
     			doActionIBSheet(currentSheet, document.form, IBSEARCH);
     		}
-    	}else{
+    	} else {
     		if(searchDetail != formQuery){
-//    			searchDetail=formQuery;
     			doActionIBSheet(currentSheet, document.form, IBSEARCH);
     		}
     	}
@@ -628,6 +632,7 @@
      * @param Col
      */
     function sheet1_OnDblClick(sheetObj, Row, Col) {
+    	isDblClick = true;
     	formObj = document.form;
     	var rowCount = sheetObjects[1].RowCount();
     	if (sheetObj.GetCellValue(Row,"jo_crr_cd") == ""){
@@ -640,7 +645,6 @@
     		tab1.SetSelectedIndex(1);
     	}
     	sheetObjects[1].SetSelectRow(getSelectRow(sheetObj, Row, Col));
-    	
     }
     
     /**
@@ -667,6 +671,38 @@
         	}
     	} return num;
     }
+    
+
+function totalSum(sheetObj) {
+	var totalVND = 0;
+	var totalUSD = 0;
+	var totalVND1 = 0;
+	var totalUSD1 = 0;
+	var subsum = sheetObj.FindSubSumRow();
+	var arrSubsum = subsum.split("|");
+	for (var i = 0; i < arrSubsum.length; i++) {
+		if (sheetObj.GetCellValue(arrSubsum[i], "locl_curr_cd") == "VND") {
+			totalVND += sheetObj.GetCellValue(arrSubsum[i], "inv_rev_act_amt");
+			totalVND1 += sheetObj.GetCellValue(arrSubsum[i], "inv_exp_act_amt");
+		} else {
+			totalUSD += sheetObj.GetCellValue(arrSubsum[i], "inv_rev_act_amt");
+			totalUSD1 += sheetObj.GetCellValue(arrSubsum[i], "inv_exp_act_amt");
+		}
+	}
+	sheetObj.DataInsert(-1);
+	sheetObj.SetCellValue(sheetObj.LastRow(), "locl_curr_cd", "VND");
+	sheetObj.SetCellValue(sheetObj.LastRow(), "inv_rev_act_amt", totalVND);
+	sheetObj.SetCellValue(sheetObj.LastRow(), "inv_exp_act_amt", totalVND1);
+	sheetObj.SetRangeFontBold(sheetObj.LastRow(), 1, i, 10, 1);
+	sheetObj.SetRowBackColor(sheetObj.LastRow(), "#ff9933");
+	sheetObj.DataInsert(-1);
+	sheetObj.SetCellValue(sheetObj.LastRow(), "locl_curr_cd", "USD");
+	sheetObj.SetCellValue(sheetObj.LastRow(), "inv_rev_act_amt", totalUSD);
+	sheetObj.SetCellValue(sheetObj.LastRow(), "inv_exp_act_amt", totalUSD1);
+	sheetObj.SetRangeFontBold(sheetObj.LastRow(), 1, i, 10, 1);
+	sheetObj.SetRowBackColor(sheetObj.LastRow(), "#ff9933");
+	sheetObj.SetSelectRow(3);
+}
     
     /**
      * 
@@ -723,7 +759,7 @@
      }
 
     /**
-      	* event start after searching sheet 1
+     * event start after searching sheet 1
      * @param sheetObj
      * @param Code
      * @param Msg
@@ -748,3 +784,5 @@
     		}
     	}
      }
+    
+ 
