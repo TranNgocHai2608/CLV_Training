@@ -46,7 +46,7 @@
 		loadPage();
 	}
 </script>
-<script language="javascript" type="text/javascript" src="apps/opus/esm/clv/practice1/moneymgmt/script/CoMoneyMgmt.js"></script>
+
 <form name="form">
 	<input type="hidden" name="f_cmd"> 
 	<input type="hidden" name="pagerows"> 
@@ -95,7 +95,6 @@
 						<col width="55px">
 						<col width="*" />
 					</colgroup>
-					<tr class = "h23">
 						<th>Year Month</th>
 						<td>
 							<input type="text" style="width: 100px;" class="input1" value="" name="acct_yrmon_from" id="acct_yrmon_from" readonly><!--
@@ -111,7 +110,6 @@
 						<td><script type="text/javascript">ComComboObject('s_rlane_cd', 1, 100, 1, 0, 0);</script></td>
 						<th>Trade</th>
 						<td><script type="text/javascript">ComComboObject('s_trade_cd', 1, 100, 1, 0, 0);</script></td>
-					</tr>
 				</tbody>
 			</table>
 		</div>

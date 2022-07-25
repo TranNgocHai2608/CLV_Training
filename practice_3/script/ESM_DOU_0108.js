@@ -112,7 +112,7 @@
 	  * @param Code
 	  * @param Checked
 	  */
-	 function s_jo_crr_cd_OnCheckClick(Index, Code, Checked) {
+	 function s_jo_crr_cd_OnCheckClick(comboObject, Code, Checked) {
 			var count = s_jo_crr_cd.GetItemCount();
 			var checkSelectCount = 0;
 			if (Code == 0){
@@ -411,8 +411,8 @@
     	       	             { Type: "Text",   Hidden: 0, Width: 200, Align: "Center", ColMerge: 0, SaveName: "csr_no",          KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0}, 
     	       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "apro_flg",        KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
     	       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "locl_curr_cd",    KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    	       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_rev_act_amt", KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    	       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_exp_act_amt", KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    	       	             { Type: "Float",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_rev_act_amt", KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    	       	          	 { Type: "Float",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_exp_act_amt", KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
     	       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "prnr_ref_no",     KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
     	       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "cust_vndr_eng_nm",KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0}
     	       	             ];
@@ -445,8 +445,8 @@
     		       	             { Type: "Combo",  Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "rev_exp",         KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0, ComboText: "Rev|Exp", ComboCode: "R|E"},
     		       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "item",        	 KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
     		       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "locl_curr_cd",    KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    		       	             { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_rev_act_amt", KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
-    		       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_exp_act_amt", KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    		       	             { Type: "Float",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_rev_act_amt", KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
+    		       	          	 { Type: "Float",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "inv_exp_act_amt", KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
     		       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "prnr_ref_no",     KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0},
     		       	          	 { Type: "Text",   Hidden: 0, Width: 100, Align: "Center", ColMerge: 0, SaveName: "cust_vndr_eng_nm",KeyField: 0, Format: "", UpdateEdit: 0, InsertEdit: 0}
     		       	             ];
@@ -519,7 +519,6 @@
         comboObjects[0].SetSelectIndex(0);	
         sheetObjects[0].RemoveAll();
         sheetObjects[1].RemoveAll();
-
     }
     
     /**
@@ -550,7 +549,7 @@
     	return ComGetDaysBetween(fromDate, toDate) > 88;
         
     }
-    
+
     /**
      * event start when click change tab
      * nItem the number of tab that user click in
@@ -674,35 +673,40 @@
     
 
 function totalSum(sheetObj) {
-	var totalVND = 0;
-	var totalUSD = 0;
-	var totalVND1 = 0;
-	var totalUSD1 = 0;
-	var subsum = sheetObj.FindSubSumRow();
-	var arrSubsum = subsum.split("|");
-	for (var i = 0; i < arrSubsum.length; i++) {
-		if (sheetObj.GetCellValue(arrSubsum[i], "locl_curr_cd") == "VND") {
-			totalVND += sheetObj.GetCellValue(arrSubsum[i], "inv_rev_act_amt");
-			totalVND1 += sheetObj.GetCellValue(arrSubsum[i], "inv_exp_act_amt");
-		} else {
-			totalUSD += sheetObj.GetCellValue(arrSubsum[i], "inv_rev_act_amt");
-			totalUSD1 += sheetObj.GetCellValue(arrSubsum[i], "inv_exp_act_amt");
-		}
+		var revTotalVND = 0;
+	    var expTotalVND = 0;
+	    var revTotalUSD = 0;
+	    var expTotalUSD = 0;
+
+	    var subsum = sheetObj.FindSubSumRow();
+	    var arrSubsum = subsum.split("|");
+
+	    for (var i = 0; i < arrSubsum.length; i++) {
+	        var locl_curr_cd = sheetObj.GetCellValue(arrSubsum[i] - 1, "locl_curr_cd");
+	        sheetObj.SetCellValue(arrSubsum[i], "locl_curr_cd", locl_curr_cd);
+	        sheetObj.SetCellFont("FontBold", arrSubsum[i], "locl_curr_cd", arrSubsum[i], "inv_exp_act_amt", 1);
+	        if (locl_curr_cd == "VND") {
+	            revTotalVND += sheetObj.GetCellValue(arrSubsum[i], "inv_rev_act_amt");
+	            expTotalVND += sheetObj.GetCellValue(arrSubsum[i], "inv_exp_act_amt");
+	        } else {
+	            revTotalUSD += sheetObj.GetCellValue(arrSubsum[i], "inv_rev_act_amt");
+	            expTotalUSD += sheetObj.GetCellValue(arrSubsum[i], "inv_exp_act_amt");
+	        }
+	    }
+	    sheetObj.DataInsert(-1);
+	    sheetObj.SetCellValue(sheetObj.LastRow(), "locl_curr_cd", "VND");
+	    sheetObj.SetCellValue(sheetObj.LastRow(), "inv_rev_act_amt", revTotalVND);
+	    sheetObj.SetCellValue(sheetObj.LastRow(), "inv_exp_act_amt", expTotalVND);
+	    sheetObj.SetCellValue(sheetObj.LastRow(), "rev_exp", "");
+
+	    sheetObj.DataInsert(-1);
+	    sheetObj.SetCellValue(sheetObj.LastRow(), "locl_curr_cd", "USD");
+	    sheetObj.SetCellValue(sheetObj.LastRow(), "inv_rev_act_amt", revTotalUSD);
+	    sheetObj.SetCellValue(sheetObj.LastRow(), "inv_exp_act_amt", expTotalUSD);
+	    sheetObj.SetCellValue(sheetObj.LastRow(), "rev_exp", "");
+
+	    sheetObj.SetSelectRow(-1);
 	}
-	sheetObj.DataInsert(-1);
-	sheetObj.SetCellValue(sheetObj.LastRow(), "locl_curr_cd", "VND");
-	sheetObj.SetCellValue(sheetObj.LastRow(), "inv_rev_act_amt", totalVND);
-	sheetObj.SetCellValue(sheetObj.LastRow(), "inv_exp_act_amt", totalVND1);
-	sheetObj.SetRangeFontBold(sheetObj.LastRow(), 1, i, 10, 1);
-	sheetObj.SetRowBackColor(sheetObj.LastRow(), "#ff9933");
-	sheetObj.DataInsert(-1);
-	sheetObj.SetCellValue(sheetObj.LastRow(), "locl_curr_cd", "USD");
-	sheetObj.SetCellValue(sheetObj.LastRow(), "inv_rev_act_amt", totalUSD);
-	sheetObj.SetCellValue(sheetObj.LastRow(), "inv_exp_act_amt", totalUSD1);
-	sheetObj.SetRangeFontBold(sheetObj.LastRow(), 1, i, 10, 1);
-	sheetObj.SetRowBackColor(sheetObj.LastRow(), "#ff9933");
-	sheetObj.SetSelectRow(3);
-}
     
     /**
      * 
@@ -737,7 +741,12 @@ function totalSum(sheetObj) {
      */
     function sheet1_OnSearchEnd(sheetObj, Code, Msg, StCode, StMsg) { 
      	ComOpenWait(false);
+     	if(sheetObj.RowCount() > 0){
+         	totalSum(sheetObj);
+     	}
+
     	var totalRow = sheetObj.RowCount();
+    	
     	for (var i = 1; i <= totalRow+1; i++){
     		if (sheetObj.GetCellValue(i, "jo_crr_cd") == ''){
     			if (sheetObj.GetCellValue(i, "inv_no") !== ''){
@@ -749,9 +758,7 @@ function totalSum(sheetObj) {
     				sheetObj.SetRowBackColor(i,"#f7caac");
     				sheetObj.SetRangeFontBold(i,1,i,10,1);
     			}
-
     		}
-    		
     	}
     	document.form.f_cmd=SEARCH03;
     	searchOptionForDbl= FormQueryString(document.form)
@@ -768,6 +775,10 @@ function totalSum(sheetObj) {
      */
     function sheet2_OnSearchEnd(sheetObj, Code, Msg, StCode, StMsg) { 
      	ComOpenWait(false);
+    	if(sheetObj.RowCount() > 0){
+         	totalSum(sheetObj);
+     	}
+
     	var totalRow = sheetObj.RowCount();
     	for (var i = 1; i <= totalRow+1; i++){
     		if (sheetObj.GetCellValue(i, "jo_crr_cd") == ''){
@@ -780,7 +791,6 @@ function totalSum(sheetObj) {
     				sheetObj.SetRowBackColor(i,"#f7caac");
     				sheetObj.SetRangeFontBold(i,1,i,10,1);
     			}
-
     		}
     	}
      }

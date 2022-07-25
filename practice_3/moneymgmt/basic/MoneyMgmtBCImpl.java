@@ -40,6 +40,12 @@ public class MoneyMgmtBCImpl extends BasicCommandSupport implements
 	}
 	
 	@Override
+	/**
+	 * Searching Summary data method
+	 * @param summaryVO
+	 * @return 
+	 * @throws EventException
+	 */
 	public List<SummaryVO> searchSummaryMgmt(SummaryVO summaryVO) throws EventException{
 		try {
 			return dbDao.searchSummaryMgmt(summaryVO);
@@ -49,6 +55,13 @@ public class MoneyMgmtBCImpl extends BasicCommandSupport implements
 			throw new EventException(new ErrorHandler(ex).getMessage(), ex);
 		}
 	}
+	
+	/**
+	 * Searching Details data
+	 * @param searchDetailVO
+	 * @return
+	 * @throws EventException
+	 */
 	public List<SearchDetailsVO> searchDetails(SearchDetailsVO searchDetailsVO) throws EventException{
 		try {
 			return dbDao.searchDetails(searchDetailsVO);
@@ -58,6 +71,13 @@ public class MoneyMgmtBCImpl extends BasicCommandSupport implements
 			throw new EventException(new ErrorHandler(ex).getMessage(), ex);
 		}
 	}
+	
+	/**
+	 * Getting Partner combo
+	 * @param summaryVO
+	 * @return
+	 * @throws EventException
+	 */
 	public List<SummaryVO> searchPartnerCombo(SummaryVO summaryVO) throws EventException{
 		try {
 			return dbDao.searchPartnerCombo(summaryVO);
@@ -68,6 +88,12 @@ public class MoneyMgmtBCImpl extends BasicCommandSupport implements
 		}
 	}
 	
+	/**
+	 * Getting Lane combo
+	 * @param summaryVO
+	 * @return
+	 * @throws EventException
+	 */
 	public List<SummaryVO> searchLaneCombo(SummaryVO summaryVO) throws EventException{
 		try {
 			return dbDao.searchLaneCombo(summaryVO);
@@ -78,6 +104,12 @@ public class MoneyMgmtBCImpl extends BasicCommandSupport implements
 		}
 	}
 	
+	/**
+	 * getting Trade combo
+	 * @param summaryVO
+	 * @return
+	 * @throws EventException
+	 */
 	public List<SummaryVO> searchTradeCombo(SummaryVO summaryVO) throws EventException{
 		try {
 			return dbDao.searchTradeCombo(summaryVO);
